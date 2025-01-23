@@ -1,5 +1,15 @@
 pySmithPlot
 ===========
+This is an updated version of pySmithPlot/vMeijin.
+
+[Changelog](differences.patch)
+
+
+
+
+[link to github of vMeijin/pySmithPlot](https://github.com/vMeijin/pySmithPlot)
+
+
 
 ## New Release of Version 0.2
 
