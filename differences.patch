@@ -1,0 +1,146 @@
+Binary files pySmithPlotmaster/smithplot/__pycache__/__init__.cpython-312.pyc and pySmithPlotmasterorjinal/smithplot/__pycache__/__init__.cpython-312.pyc differ
+Binary files pySmithPlotmaster/smithplot/__pycache__/smithaxes.cpython-312.pyc and pySmithPlotmasterorjinal/smithplot/__pycache__/smithaxes.cpython-312.pyc differ
+Binary files pySmithPlotmaster/smithplot/__pycache__/smithhelper.cpython-312.pyc and pySmithPlotmasterorjinal/smithplot/__pycache__/smithhelper.cpython-312.pyc differ
+diff -ruN pySmithPlotmaster/smithplot/smithaxes.py pySmithPlotmasterorjinal/smithplot/smithaxes.py
+--- pySmithPlotmaster/smithplot/smithaxes.py	2025-01-23 16:45:41.871490700 +0300
++++ pySmithPlotmasterorjinal/smithplot/smithaxes.py	2018-04-11 17:02:04.000000000 +0300
+@@ -36,7 +36,7 @@
+ parameters are array-like types (e.g. numpy.ndarray).
+ '''
+ 
+-from collections.abc import Iterable
++from collections import Iterable
+ from numbers import Number
+ from types import MethodType, FunctionType
+ 
+@@ -45,7 +45,7 @@
+ from matplotlib.axes import Axes
+ from matplotlib.axis import XAxis
+ from matplotlib.cbook import simple_linear_interpolation as linear_interpolation
+-from matplotlib.legend_handler import HandlerLine2D, HandlerLine2DCompound
++from matplotlib.legend_handler import HandlerLine2D
+ from matplotlib.lines import Line2D
+ from matplotlib.markers import MarkerStyle
+ from matplotlib.patches import Circle, Arc
+@@ -449,18 +449,18 @@
+                              self.yaxis.get_majorticklocs()):
+             # workaround for fixing to small infinity symbol
+             if abs(loc) > self._near_inf:
+-                tick.label1.set_size(tick.label1.get_size() +
++                tick.label.set_size(tick.label.get_size() +
+                                     self._get_key("symbol.infinity.correction"))
+ 
+-            tick.label1.set_verticalalignment('center')
++            tick.label.set_verticalalignment('center')
+ 
+             x = np.real(self._moebius_z(loc * 1j))
+             if x < -0.1:
+-                tick.label1.set_horizontalalignment('right')
++                tick.label.set_horizontalalignment('right')
+             elif x > 0.1:
+-                tick.label1.set_horizontalalignment('left')
++                tick.label.set_horizontalalignment('left')
+             else:
+-                tick.label1.set_horizontalalignment('center')
++                tick.label.set_horizontalalignment('center')
+ 
+         self.yaxis.set_major_formatter(self.ImagFormatter(self))
+         self.xaxis.set_major_formatter(self.RealFormatter(self))
+@@ -507,8 +507,7 @@
+ 
+     def get_yaxis_text1_transform(self, pixelPad):
+         if hasattr(self, 'yaxis') and len(self.yaxis.majorTicks) > 0:
+-            font_size = self.yaxis.majorTicks[0].label1.get_fontsize()
+-            # font_size = self.yaxis.majorTicks[0].label1
++            font_size = self.yaxis.majorTicks[0].label.get_size()
+         else:
+             font_size = self._get_key("font.size")
+ 
+@@ -652,11 +651,11 @@
+     def legend(self, *args, **kwargs):
+         this_axes = self
+ 
+-        class SmithHandlerLine2D(HandlerLine2DCompound):
++        class SmithHandlerLine2D(HandlerLine2D):
+             def create_artists(self, legend, orig_handle,
+                                xdescent, ydescent, width, height, fontsize,
+                                trans):
+-                legline, legline_marker = HandlerLine2DCompound.create_artists(self, legend, orig_handle, xdescent, ydescent,
++                legline, legline_marker = HandlerLine2D.create_artists(self, legend, orig_handle, xdescent, ydescent,
+                                                                        width, height, fontsize, trans)
+ 
+                 if hasattr(orig_handle, "_markerhacked"):
+@@ -729,7 +728,7 @@
+                     pass
+ 
+             # if (converted) arg is an ndarray of complex type, split it
+-            if isinstance(arg, np.ndarray) and arg.dtype in [complex, np.complex128]:
++            if isinstance(arg, np.ndarray) and arg.dtype in [np.complex, np.complex128]:
+                 new_args += z_to_xy(arg)
+             else:
+                 new_args += (arg,)
+@@ -1062,11 +1061,11 @@
+ 
+                             x_div, y_div = d_mat[i, k]
+ 
+-                            for xs in np.linspace(np.int32(x0), x1, np.int32(x_div + 1))[1:]:
++                            for xs in np.linspace(x0, x1, x_div + 1)[1:]:
+                                 x_lines.append([xs, y0, y1])
+                                 x_lines.append([xs, -y1, -y0])
+ 
+-                            for ys in np.linspace(np.int32(y0), y1, np.int32(y_div + 1))[1:]:
++                            for ys in np.linspace(y0, y1, y_div + 1)[1:]:
+                                 y_lines.append([ys, x0, x1])
+                                 y_lines.append([-ys, x0, x1])
+ 
+diff -ruN pySmithPlotmaster/smithplot/smithhelper.py pySmithPlotmasterorjinal/smithplot/smithhelper.py
+--- pySmithPlotmaster/smithplot/smithhelper.py	2025-01-23 14:31:04.691530200 +0300
++++ pySmithPlotmasterorjinal/smithplot/smithhelper.py	2018-04-11 17:02:04.000000000 +0300
+@@ -1,7 +1,7 @@
+ # -*- coding: utf-8 -*-
+ # last edit: 11.04.2018
+ 
+-from collections.abc import Iterable
++from collections import Iterable
+ 
+ import numpy as np
+ 
+Binary files pySmithPlotmaster/testbenches/build/sample_fancy_grid.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_fancy_grid.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_fancy_grid.png and pySmithPlotmasterorjinal/testbenches/build/sample_fancy_grid.png differ
+Binary files pySmithPlotmaster/testbenches/build/sample_grid_locators.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_grid_locators.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_grid_locators.png and pySmithPlotmasterorjinal/testbenches/build/sample_grid_locators.png differ
+Binary files pySmithPlotmaster/testbenches/build/sample_grid_styles.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_grid_styles.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_grid_styles.png and pySmithPlotmasterorjinal/testbenches/build/sample_grid_styles.png differ
+Binary files pySmithPlotmaster/testbenches/build/sample_interpolation.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_interpolation.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_interpolation.png and pySmithPlotmasterorjinal/testbenches/build/sample_interpolation.png differ
+Binary files pySmithPlotmaster/testbenches/build/sample_miscellaneous.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_miscellaneous.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_miscellaneous.png and pySmithPlotmasterorjinal/testbenches/build/sample_miscellaneous.png differ
+Binary files pySmithPlotmaster/testbenches/build/sample_normalize.pdf and pySmithPlotmasterorjinal/testbenches/build/sample_normalize.pdf differ
+Binary files pySmithPlotmaster/testbenches/build/sample_normalize.png and pySmithPlotmasterorjinal/testbenches/build/sample_normalize.png differ
+Binary files pySmithPlotmaster/testbenches/export.pdf and pySmithPlotmasterorjinal/testbenches/export.pdf differ
+diff -ruN pySmithPlotmaster/testbenches/smith_full_test.py pySmithPlotmasterorjinal/testbenches/smith_full_test.py
+--- pySmithPlotmaster/testbenches/smith_full_test.py	2025-01-23 14:37:19.426295400 +0300
++++ pySmithPlotmasterorjinal/testbenches/smith_full_test.py	2024-07-20 14:32:03.613879200 +0300
+@@ -11,8 +11,8 @@
+ from matplotlib import rcParams, pyplot as pp
+ 
+ sys.path.append("..")
+-from pySmithPlotmaster.smithplot.smithaxes import SmithAxes
+-from pySmithPlotmaster.smithplot import smithhelper
++from smithplot.smithaxes import SmithAxes
++from smithplot import smithhelper
+ rcParams.update({"legend.numpoints": 3,
+                  "axes.axisbelow": True})
+ 
+diff -ruN pySmithPlotmaster/testbenches/smith_short_test.py pySmithPlotmasterorjinal/testbenches/smith_short_test.py
+--- pySmithPlotmaster/testbenches/smith_short_test.py	2025-01-23 14:37:19.430285500 +0300
++++ pySmithPlotmasterorjinal/testbenches/smith_short_test.py	2018-04-11 17:02:04.000000000 +0300
+@@ -8,7 +8,7 @@
+ rcParams.update({"legend.numpoints": 3})
+ 
+ sys.path.append("..")
+-from pySmithPlotmaster.smithplot import SmithAxes
++from smithplot import SmithAxes
+ 
+ # sample data
+ data = np.loadtxt("data/s11.csv", delimiter=",", skiprows=1)[::100]
